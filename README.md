@@ -4,6 +4,10 @@ A Spring Boot learning platform modeled on a university course: one or two profe
 presentations; teaching assistants run sections using sheets and manage assignments; enrolled students submit their work
 to the TA responsible for their section.
 
+## System diagram
+
+![LMS system diagram](system-diagram.svg)
+
 ## Run locally
 
 Create an empty PostgreSQL database named `lms`, then provide its connection settings through variables in
