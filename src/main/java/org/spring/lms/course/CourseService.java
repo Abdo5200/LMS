@@ -1,7 +1,6 @@
 package org.spring.lms.course;
 
 import jakarta.persistence.EntityNotFoundException;
-import org.spring.lms.assignment.AssignmentRepository;
 import org.spring.lms.user.UserAccount;
 import org.spring.lms.user.UserRepository;
 import org.spring.lms.user.UserRole;
@@ -17,17 +16,13 @@ public class CourseService {
     private final UserRepository users;
     private final CourseMapper mapper;
     private final LectureRepository lectures;
-    private final SectionRepository sections;
-    private final AssignmentRepository assignments;
 
     public CourseService(CourseRepository courses, UserRepository users, CourseMapper mapper,
-                         LectureRepository lectures, SectionRepository sections, AssignmentRepository assignments) {
+                         LectureRepository lectures) {
         this.courses = courses;
         this.users = users;
         this.mapper = mapper;
         this.lectures = lectures;
-        this.sections = sections;
-        this.assignments = assignments;
     }
 
     public CourseResponse create(CreateCourseRequest request) {
@@ -123,9 +118,8 @@ public class CourseService {
 
     public CourseResponse publish(Long id) {
         Course course = find(id);
-        long sectionCount = sections.countByCourseId(id);
-        if (lectures.countByCourseId(id) == 0 || sectionCount == 0 || assignments.countBySectionCourseId(id) != sectionCount) {
-            throw new IllegalStateException("Add a lecture and give every section an assignment before publishing.");
+        if (course.getInstructors().isEmpty()) {
+            throw new IllegalStateException("Assign at least one professor before publishing.");
         }
         course.setPublished(true);
         return mapper.toResponse(course);

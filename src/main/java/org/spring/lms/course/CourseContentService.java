@@ -90,8 +90,4 @@ public class CourseContentService {
                 .toList();
     }
 
-    private void requireDraft(Course course) {
-        if (course.isPublished())
-            throw new IllegalStateException("Published course content cannot be changed.");
-    }
 }

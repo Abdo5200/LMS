@@ -89,6 +89,11 @@
       "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('created', () => pm.response.to.have.status(201));", "pm.collectionVariables.set('sectionId', pm.response.json().id);"] } }]
     },
     {
+      "name": "7a. List course sections",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/courses/{{courseId}}/sections" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('ok', () => pm.response.to.have.status(200));", "pm.test('created section is listed', () => pm.expect(pm.response.json().some(section => section.id === Number(pm.collectionVariables.get('sectionId')))).to.eql(true));"] } }]
+    },
+    {
       "name": "8. Add section assignment",
       "request": {
         "method": "POST",
@@ -99,14 +104,19 @@
       "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('created', () => pm.response.to.have.status(201));", "pm.collectionVariables.set('assignmentId', pm.response.json().id);"] } }]
     },
     {
-      "name": "9. Get section assignment",
+      "name": "8a. Get first section assignment",
       "request": { "method": "GET", "url": "{{baseUrl}}/api/sections/{{sectionId}}/assignment" },
-      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('ok', () => pm.response.to.have.status(200));", "pm.test('belongs to expected section', () => pm.expect(pm.response.json().sectionId).to.eql(Number(pm.collectionVariables.get('sectionId'))));"] } }]
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('ok', () => pm.response.to.have.status(200));", "pm.test('assignment belongs to expected section', () => pm.expect(pm.response.json().sectionId).to.eql(Number(pm.collectionVariables.get('sectionId'))));"] } }]
+    },
+    {
+      "name": "9. List section assignments",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/sections/{{sectionId}}/assignments" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('ok', () => pm.response.to.have.status(200));", "pm.test('contains expected section assignment', () => pm.expect(pm.response.json().some(assignment => assignment.sectionId === Number(pm.collectionVariables.get('sectionId')))).to.eql(true));"] } }]
     },
     {
       "name": "10. Publish course",
       "request": { "method": "POST", "url": "{{baseUrl}}/api/courses/{{courseId}}/publish" },
-      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('published', () => pm.response.to.have.status(200));", "pm.test('published flag is true', () => pm.expect(pm.response.json().published).to.eql(true));"] } }]
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('published', () => pm.response.to.have.status(201));", "pm.test('published flag is true', () => pm.expect(pm.response.json().published).to.eql(true));"] } }]
     },
     {
       "name": "11. Browse published courses",

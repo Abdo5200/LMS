@@ -62,11 +62,13 @@ new professor is already assigned, the old professor is simply removed from the 
 
 Add professor-taught lectures with `POST /api/courses/{courseId}/lectures`; each lecture names one of the course's
 professors and includes a presentation URL. Add TA-led sections with `POST /api/courses/{courseId}/sections`; each
-section names its TA and includes a sheet URL. Positions start at 1 and are unique within the course. Give every section
-one assignment with `POST /api/sections/{sectionId}/assignment`.
+section names its TA and includes a sheet URL. Positions start at 1 and are unique within the course. Lectures, sections,
+and assignments can be added as the course progresses, including after publication. A section can have multiple
+assignments; create one with `POST /api/sections/{sectionId}/assignment` and list them with
+`GET /api/sections/{sectionId}/assignments`.
 
-Publish using `POST /api/courses/{courseId}/publish`; a course needs at least one lecture, one section, and an
-assignment for every section. Courses use a boolean `published` field. Enroll a student with
+Publish using `POST /api/courses/{courseId}/publish`; a course needs at least one assigned professor. Lectures, sections,
+and assignments can be added later as the academic year progresses. Courses use a boolean `published` field. Enroll a student with
 `POST /api/enrollments?studentId={id}&courseId={id}`, then submit work with
 `POST /api/assignments/{assignmentId}/submissions?studentId={id}` and a JSON body containing the URL of the student's
 uploaded work. The submission is associated with the assignment, whose section identifies the TA responsible for it. The

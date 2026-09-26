@@ -39,12 +39,6 @@ public class AssignmentService {
                 .findById(sectionId)
                 .orElseThrow(() -> new EntityNotFoundException("Section " + sectionId + " was not found."));
 
-        if (section.getCourse().isPublished())
-            throw new IllegalStateException("Published course assignments cannot be changed.");
-
-        if (assignments.existsBySectionId(sectionId))
-            throw new IllegalStateException("This section already has an assignment.");
-
         Assignment assignment = mapper.toEntity(request);
         assignment.setTitle(assignment.getTitle().trim());
         assignment.setInstructions(assignment.getInstructions().trim());
@@ -55,9 +49,19 @@ public class AssignmentService {
 
     @Transactional(readOnly = true)
     public AssignmentResponse getForSection(Long sectionId) {
-        return mapper
-                .toResponse(assignments.findBySectionId(sectionId)
-                        .orElseThrow(() -> new EntityNotFoundException("No assignment exists for section " + sectionId + ".")));
+        return assignments.findAllBySectionIdOrderByDueAtAscIdAsc(sectionId).stream()
+                .findFirst()
+                .map(mapper::toResponse)
+                .orElseThrow(() -> new EntityNotFoundException("No assignment exists for section " + sectionId + "."));
+    }
+
+    @Transactional(readOnly = true)
+    public List<AssignmentResponse> getAllForSection(Long sectionId) {
+        if (!sections.existsById(sectionId))
+            throw new EntityNotFoundException("Section " + sectionId + " was not found.");
+        return assignments.findAllBySectionIdOrderByDueAtAscIdAsc(sectionId).stream()
+                .map(mapper::toResponse)
+                .toList();
     }
 
     public SubmissionResponse submit(Long assignmentId, Long studentId, CreateSubmissionRequest request) {

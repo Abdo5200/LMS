@@ -9,14 +9,14 @@ import org.spring.lms.course.CourseSection;
 import java.time.Instant;
 
 @Entity
-@Table(name = "assignments", uniqueConstraints = @UniqueConstraint(name = "uk_assignment_section", columnNames = "section_id"))
+@Table(name = "assignments")
 @Getter @Setter @NoArgsConstructor
 public class Assignment {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "section_id", nullable = false, unique = true)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "section_id", nullable = false)
     private CourseSection section;
 
     @Column(nullable = false, length = 160)
