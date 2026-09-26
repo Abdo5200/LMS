@@ -1,0 +1,167 @@
+{
+  "info": {
+    "_postman_id": "d215dbd9-3f9d-48cb-b903-6582af4c1ee9",
+    "name": "Course Room LMS",
+    "description": "End-to-end requests for users, courses, lectures, TA sections, assignments, enrollments, submissions, and professor replacement. Run the requests in order with the Collection Runner.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "instructorId", "value": "" },
+    { "key": "replacementInstructorId", "value": "" },
+    { "key": "taId", "value": "" },
+    { "key": "studentId", "value": "" },
+    { "key": "courseId", "value": "" },
+    { "key": "lectureId", "value": "" },
+    { "key": "sectionId", "value": "" },
+    { "key": "assignmentId", "value": "" },
+    { "key": "enrollmentId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "1. Create professor",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"Professor Example\",\n  \"email\": \"prof-{{$guid}}@example.test\",\n  \"role\": \"INSTRUCTOR\"\n}", "options": { "raw": { "language": "json" } } },
+        "url": "{{baseUrl}}/api/users"
+      },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('created', () => pm.response.to.have.status(201));", "const body = pm.response.json();", "pm.collectionVariables.set('instructorId', body.id);"] } }]
+    },
+    {
+      "name": "2. Create replacement professor",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"Replacement Professor\",\n  \"email\": \"replacement-{{$guid}}@example.test\",\n  \"role\": \"INSTRUCTOR\"\n}", "options": { "raw": { "language": "json" } } },
+        "url": "{{baseUrl}}/api/users"
+      },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('created', () => pm.response.to.have.status(201));", "pm.collectionVariables.set('replacementInstructorId', pm.response.json().id);"] } }]
+    },
+    {
+      "name": "3. Create teaching assistant",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"TA Example\",\n  \"email\": \"ta-{{$guid}}@example.test\",\n  \"role\": \"TEACHING_ASSISTANT\"\n}", "options": { "raw": { "language": "json" } } },
+        "url": "{{baseUrl}}/api/users"
+      },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('created', () => pm.response.to.have.status(201));", "pm.collectionVariables.set('taId', pm.response.json().id);"] } }]
+    },
+    {
+      "name": "4. Create student",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"Student Example\",\n  \"email\": \"student-{{$guid}}@example.test\",\n  \"role\": \"STUDENT\"\n}", "options": { "raw": { "language": "json" } } },
+        "url": "{{baseUrl}}/api/users"
+      },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('created', () => pm.response.to.have.status(201));", "pm.collectionVariables.set('studentId', pm.response.json().id);"] } }]
+    },
+    {
+      "name": "5. Create course",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"title\": \"Postman Test Course\",\n  \"description\": \"Course created by the Postman collection.\",\n  \"instructorIds\": [{{instructorId}}]\n}", "options": { "raw": { "language": "json" } } },
+        "url": "{{baseUrl}}/api/courses"
+      },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('created', () => pm.response.to.have.status(201));", "pm.collectionVariables.set('courseId', pm.response.json().id);"] } }]
+    },
+    {
+      "name": "6. Add lecture",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"title\": \"Introduction\",\n  \"presentationUrl\": \"https://example.test/introduction.pdf\",\n  \"instructorId\": {{instructorId}},\n  \"position\": 1\n}", "options": { "raw": { "language": "json" } } },
+        "url": "{{baseUrl}}/api/courses/{{courseId}}/lectures"
+      },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('created', () => pm.response.to.have.status(201));", "pm.collectionVariables.set('lectureId', pm.response.json().id);"] } }]
+    },
+    {
+      "name": "7. Add TA section",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"title\": \"Section A\",\n  \"sheetUrl\": \"https://example.test/section-a-sheet.pdf\",\n  \"teachingAssistantId\": {{taId}},\n  \"position\": 1\n}", "options": { "raw": { "language": "json" } } },
+        "url": "{{baseUrl}}/api/courses/{{courseId}}/sections"
+      },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('created', () => pm.response.to.have.status(201));", "pm.collectionVariables.set('sectionId', pm.response.json().id);"] } }]
+    },
+    {
+      "name": "8. Add section assignment",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"title\": \"Sheet 1\",\n  \"instructions\": \"Solve questions 1 through 5 and submit your work as a PDF.\"\n}", "options": { "raw": { "language": "json" } } },
+        "url": "{{baseUrl}}/api/sections/{{sectionId}}/assignment"
+      },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('created', () => pm.response.to.have.status(201));", "pm.collectionVariables.set('assignmentId', pm.response.json().id);"] } }]
+    },
+    {
+      "name": "9. Get section assignment",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/sections/{{sectionId}}/assignment" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('ok', () => pm.response.to.have.status(200));", "pm.test('belongs to expected section', () => pm.expect(pm.response.json().sectionId).to.eql(Number(pm.collectionVariables.get('sectionId'))));"] } }]
+    },
+    {
+      "name": "10. Publish course",
+      "request": { "method": "POST", "url": "{{baseUrl}}/api/courses/{{courseId}}/publish" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('published', () => pm.response.to.have.status(200));", "pm.test('published flag is true', () => pm.expect(pm.response.json().published).to.eql(true));"] } }]
+    },
+    {
+      "name": "11. Browse published courses",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/courses" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('ok', () => pm.response.to.have.status(200));", "pm.test('created course appears', () => pm.expect(pm.response.json().some(course => course.id === Number(pm.collectionVariables.get('courseId')))).to.eql(true));"] } }]
+    },
+    {
+      "name": "12. Get course",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/courses/{{courseId}}" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('ok', () => pm.response.to.have.status(200));"] } }]
+    },
+    {
+      "name": "13. Enroll student",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"studentId\": {{studentId}},\n  \"courseId\": {{courseId}}\n}", "options": { "raw": { "language": "json" } } },
+        "url": "{{baseUrl}}/api/enrollments"
+      },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('created', () => pm.response.to.have.status(201));", "pm.collectionVariables.set('enrollmentId', pm.response.json().id);"] } }]
+    },
+    {
+      "name": "14. List student enrollments",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/enrollments?studentId={{studentId}}" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('ok', () => pm.response.to.have.status(200));"] } }]
+    },
+    {
+      "name": "15. Submit assignment",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"submissionUrl\": \"https://example.test/student-solution.pdf\"\n}", "options": { "raw": { "language": "json" } } },
+        "url": "{{baseUrl}}/api/assignments/{{assignmentId}}/submissions?studentId={{studentId}}"
+      },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('created', () => pm.response.to.have.status(201));"] } }]
+    },
+    {
+      "name": "16. List assignment submissions",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/assignments/{{assignmentId}}/submissions" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('ok', () => pm.response.to.have.status(200));", "pm.test('student submission is listed', () => pm.expect(pm.response.json().some(item => item.studentId === Number(pm.collectionVariables.get('studentId')))).to.eql(true));"] } }]
+    },
+    {
+      "name": "17. Replace professor and transfer lectures",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"oldInstructorId\": {{instructorId}},\n  \"newInstructorId\": {{replacementInstructorId}}\n}", "options": { "raw": { "language": "json" } } },
+        "url": "{{baseUrl}}/api/courses/{{courseId}}/instructors"
+      },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('updated', () => pm.response.to.have.status(200));", "pm.test('replacement is on course', () => pm.expect(pm.response.json().instructors.some(instructor => instructor.id === Number(pm.collectionVariables.get('replacementInstructorId')))).to.eql(true));"] } }]
+    },
+    {
+      "name": "18. Verify lecture transferred",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/courses/{{courseId}}/lectures" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('ok', () => pm.response.to.have.status(200));", "const lecture = pm.response.json().find(item => item.id === Number(pm.collectionVariables.get('lectureId')));", "pm.test('lecture now belongs to replacement professor', () => pm.expect(lecture.instructorId).to.eql(Number(pm.collectionVariables.get('replacementInstructorId'))));"] } }]
+    }
+  ]
+}
