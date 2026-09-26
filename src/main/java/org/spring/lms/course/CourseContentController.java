@@ -27,7 +27,7 @@ public class CourseContentController {
     public ResponseEntity<List<SectionResponse>> sections(@PathVariable Long courseId) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(service.sections(courseId));
+                .body(service.getSections(courseId));
     }
 
     @PostMapping("/lectures")
@@ -41,6 +41,6 @@ public class CourseContentController {
     public ResponseEntity<List<LectureResponse>> lectures(@PathVariable Long courseId) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(service.lectures(courseId));
+                .body(service.getLectures(courseId));
     }
 }

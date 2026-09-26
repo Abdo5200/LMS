@@ -54,7 +54,7 @@ public class EnrollmentService {
         return mapper.toResponse(enrollments.save(enrollment));
     }
 
-    public List<EnrollmentResponse> listForStudent(Long studentId) {
+    public List<EnrollmentResponse> getStudentEnrollments(Long studentId) {
         if (!users.existsById(studentId))
             throw new EntityNotFoundException("Student " + studentId + " was not found.");
 

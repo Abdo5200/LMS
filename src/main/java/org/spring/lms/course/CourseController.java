@@ -23,11 +23,11 @@ public class CourseController {
                 .body(service.getAllCourses());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<CourseResponse> get(@PathVariable Long id) {
+    @GetMapping("/{courseId}")
+    public ResponseEntity<CourseResponse> get(@PathVariable Long courseId) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(service.getCourse(id));
+                .body(service.getCourse(courseId));
     }
 
     @PostMapping
@@ -37,17 +37,17 @@ public class CourseController {
                 .body(service.create(request));
     }
 
-    @PutMapping("/{id}/instructors")
-    public ResponseEntity<CourseResponse> changeInstructor(@PathVariable Long id, @Valid @RequestBody ChangeCourseInstructorRequest request) {
+    @PutMapping("/{courseId}/instructors")
+    public ResponseEntity<CourseResponse> changeInstructor(@PathVariable Long courseId, @Valid @RequestBody ChangeCourseInstructorRequest request) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(service.changeInstructor(id, request));
+                .body(service.changeInstructor(courseId, request));
     }
 
-    @PostMapping("/{id}/publish")
-    public ResponseEntity<CourseResponse> publish(@PathVariable Long id) {
+    @PostMapping("/{courseId}/publish")
+    public ResponseEntity<CourseResponse> publish(@PathVariable Long courseId) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(service.publish(id));
+                .body(service.publish(courseId));
     }
 }

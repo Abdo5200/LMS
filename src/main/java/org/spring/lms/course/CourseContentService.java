@@ -52,7 +52,7 @@ public class CourseContentService {
     }
 
     @Transactional(readOnly = true)
-    public List<SectionResponse> sections(Long courseId) {
+    public List<SectionResponse> getSections(Long courseId) {
         courses.find(courseId);
         return sections
                 .findAllByCourseIdOrderByPosition(courseId)
@@ -81,7 +81,7 @@ public class CourseContentService {
     }
 
     @Transactional(readOnly = true)
-    public List<LectureResponse> lectures(Long courseId) {
+    public List<LectureResponse> getLectures(Long courseId) {
         courses.find(courseId);
         return lectures
                 .findAllByCourseIdOrderByPosition(courseId)

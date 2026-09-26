@@ -29,6 +29,6 @@ public class EnrollmentController {
     public ResponseEntity<List<EnrollmentResponse>> listForStudent(@RequestParam @NotNull Long studentId) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(service.listForStudent(studentId));
+                .body(service.getStudentEnrollments(studentId));
     }
 }
