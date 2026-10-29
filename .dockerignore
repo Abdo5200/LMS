@@ -1,0 +1,13 @@
+target/
+.git/
+.github/
+.idea/
+.vscode/
+*.iml
+*.log
+secrets.properties
+.env
+HELP.md
+README.md
+postman/
+system-diagram.svg
